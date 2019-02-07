@@ -1,38 +1,41 @@
 import smtplib
-from email.MIMEMultipart import MIMEMultipart
-from email.MIMEText import MIMEText
-from email.MIMEImage import MIMEImage
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.image import MIMEImage
+
+from config import config
 
 # Email you want to send the update from (only works with gmail)
-fromEmail = 'email@gmail.com'
+fromEmail = config["MAIL"]["from"]
 # You can generate an app password here to avoid storing your password in plain text
 # https://support.google.com/accounts/answer/185833?hl=en
-fromEmailPassword = 'password'
+fromEmailPassword = config["MAIL"]["from_pass"]
 
 # Email you want to send the update to
-toEmail = 'email2@gmail.com'
+toEmail = config["MAIL"]["to"]
 
-def sendEmail(image):
-	msgRoot = MIMEMultipart('related')
-	msgRoot['Subject'] = 'Security Update'
-	msgRoot['From'] = fromEmail
-	msgRoot['To'] = toEmail
-	msgRoot.preamble = 'Raspberry pi security camera update'
 
-	msgAlternative = MIMEMultipart('alternative')
-	msgRoot.attach(msgAlternative)
-	msgText = MIMEText('Smart security cam found object')
-	msgAlternative.attach(msgText)
+def send_email(image):
+	msg_root = MIMEMultipart("related")
+	msg_root["Subject"] = "Security Update"
+	msg_root["From"] = fromEmail
+	msg_root["To"] = toEmail
+	msg_root.preamble = "Raspberry pi security camera update"
 
-	msgText = MIMEText('<img src="cid:image1">', 'html')
-	msgAlternative.attach(msgText)
+	msg_alternative = MIMEMultipart("alternative")
+	msg_root.attach(msg_alternative)
+	msg_text = MIMEText("Smart security cam found object")
+	msg_alternative.attach(msg_text)
 
-	msgImage = MIMEImage(image)
-	msgImage.add_header('Content-ID', '<image1>')
-	msgRoot.attach(msgImage)
+	msg_text = MIMEText('<img src="cid:image1">', "html")
+	msg_alternative.attach(msg_text)
 
-	smtp = smtplib.SMTP('smtp.gmail.com', 587)
+	msg_image = MIMEImage(image)
+	msg_image.add_header("Content-ID", "<image1>")
+	msg_root.attach(msg_image)
+
+	smtp = smtplib.SMTP("smtp.gmail.com", 587)
 	smtp.starttls()
 	smtp.login(fromEmail, fromEmailPassword)
-	smtp.sendmail(fromEmail, toEmail, msgRoot.as_string())
+	smtp.sendmail(fromEmail, toEmail, msg_root.as_string())
 	smtp.quit()
