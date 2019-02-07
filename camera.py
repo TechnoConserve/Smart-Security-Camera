@@ -20,7 +20,7 @@ class VideoCamera(object):
 
     def get_frame(self):
         frame = self.flip_if_needed(self.vs.read())
-        ret, jpeg = cv2.imencode('.jpg', frame)
+        ret, jpeg = cv2.imencode(".jpg", frame)
         return jpeg.tobytes()
 
     def get_object(self, classifier):
@@ -43,7 +43,7 @@ class VideoCamera(object):
         for (x, y, w, h) in objects:
             cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
-        ret, jpeg = cv2.imencode('.jpg', frame)
+        ret, jpeg = cv2.imencode(".jpg", frame)
         return (jpeg.tobytes(), found_objects)
 
 
