@@ -5,7 +5,7 @@ import numpy as np
 
 
 class VideoCamera(object):
-    def __init__(self, flip = False):
+    def __init__(self, flip=False):
         self.vs = PiVideoStream().start()
         self.flip = flip
         time.sleep(2.0)
@@ -25,7 +25,7 @@ class VideoCamera(object):
 
     def get_object(self, classifier):
         found_objects = False
-        frame = self.flip_if_needed(self.vs.read()).copy() 
+        frame = self.flip_if_needed(self.vs.read()).copy()
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
         objects = classifier.detectMultiScale(
