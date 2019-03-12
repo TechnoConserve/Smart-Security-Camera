@@ -11,7 +11,7 @@ from config import config
 
 email_update_interval = 600  # sends an email only once in this time interval
 video_camera = VideoCamera(flip=True)  # creates a camera object, flip vertically
-object_classifier = cv2.CascadeClassifier("models/fullbody_recognition_model.xml")  # an opencv classifier
+object_classifier = cv2.CascadeClassifier("models/facial_recognition_model.xml")  # an opencv classifier
 
 # App Globals (do not edit)
 app = Flask(__name__)
@@ -33,6 +33,11 @@ def check_for_objects():
                 print("Sending email...")
                 send_email(frame)
                 print("done!")
+
+                # Save the next few frames to disk to increase chances of capturing useful image
+                for i in range(30):
+                    frame = video_camera.get_frame()
+                    cv2.imwrite(str(i) + ".jpg", frame)
         except:
             print("Error sending email: ", sys.exc_info()[0])
 
